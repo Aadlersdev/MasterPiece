@@ -124,7 +124,6 @@
         <div class="message" id="error-message"></div>
         
         <form id="freebie-form">
-            
             <div class="checkbox-container">
                 <input type="checkbox" id="accept-checkbox">
                 <label for="accept-checkbox">I confirm I am not a robot</label>
@@ -194,29 +193,16 @@
                     const currentTimestamp = new Date().getTime();
                     setCookie('freebieTimestamp', currentTimestamp, 1); // Save timestamp for 1 day
 
-                    // Open the iframe with the Google Form
+                    // Open the iframe with the form
                     iframeContainer.innerHTML = `<iframe src="https://forms.gle/wo9rj53zPYmAGBMZ7" title="Freebie Form"></iframe>`;
-
-                    // After form submission, wait for 2 seconds and update iframe content
-                    const iframe = iframeContainer.querySelector("iframe");
-                    const iframeDoc = iframe.contentWindow.document;
-
-                    iframe.onload = function () {
-                        // Wait for 2 seconds after the form is submitted
-                        setTimeout(function () {
-                            // Check if the iframe body contains the text "Your response has been recorded"
-                            const iframeBody = iframeDoc.body;
-                            const confirmationText = "Your response has been recorded";
-
-                            if (iframeBody.innerText.includes(confirmationText)) {
-                                // Change the iframe content to show the custom message
-                                iframeContainer.innerHTML = "<h1>Something exciting awaits in your mailbox!</h1><p>Check your email now.</p>";
-                            }
-                        }, 90000); // 70-second delay after form submission
-                    };
                 }
             }
         });
+
+        // Reload the page after 3 minutes (180 seconds)
+        setTimeout(function() {
+            location.reload();
+        }, 180 * 1000); // 180 seconds = 180 * 1000 milliseconds
     </script>
 
 </body>
