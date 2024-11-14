@@ -17,21 +17,22 @@
         /* Header Styling with Logo on the Left */
         header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             padding: 20px;
-            background-color: #007bff;
+            background-color: #000; /* Black background */
             color: white;
         }
 
         header img {
-            width: 50px;
+            width: 70px; /* Larger logo size */
             height: auto;
+            margin-right: 10px;
         }
 
         header h1 {
             margin: 0;
-            font-size: 1.5em;
+            font-size: 2em;
         }
 
         /* Container for form and messages */
@@ -80,24 +81,6 @@
             margin-top: 20px;
         }
 
-        .button-container {
-            margin-top: 20px;
-        }
-
-        .button-container button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .button-container button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
         /* Footer Social Icons */
         .social-icons {
             margin-top: 30px;
@@ -107,7 +90,7 @@
         }
 
         .social-icons a {
-            font-size: 24px;
+            font-size: 30px; /* Bigger icon size */
             text-decoration: none;
             color: #333;
         }
@@ -141,15 +124,10 @@
         <div class="message" id="error-message"></div>
         
         <form id="freebie-form">
-            <label for="accept-checkbox">Check to continue:</label>
+            <label for="accept-checkbox">Confirm you are not a robot:</label>
             <div class="checkbox-container">
                 <input type="checkbox" id="accept-checkbox">
-                <label for="accept-checkbox">I accept the terms and conditions</label>
-            </div>
-
-            <!-- Button to submit the form -->
-            <div class="button-container">
-                <button type="button" id="open-form-btn" disabled>Open the Form</button>
+                <label for="accept-checkbox">I confirm I am not a robot</label>
             </div>
         </form>
 
@@ -160,13 +138,13 @@
     <!-- Social Icons Section -->
     <div class="social-icons">
         <a href="https://www.instagram.com/masterpiecebuffet/" target="_blank" title="Instagram">
-            <img src="iglogo.jpeg" alt="Instagram" width="40" height="40">
+            <img src="iglogo.jpeg" alt="Instagram" width="50" height="50">
         </a>
         <a href="tel:+919948000819" target="_blank" title="Call Us">
-            <img src="Icons/phone logo.png" alt="Phone" width="40" height="40">
+            <img src="Icons/phone logo.png" alt="Phone" width="50" height="50">
         </a>
         <a href="https://maps.app.goo.gl/SFhSyVSBXPFnw4Mu5" target="_blank" title="Find Us on Google Maps">
-            <img src="Icons/maplgo.jpeg" alt="Map" width="40" height="40">
+            <img src="Icons/maplgo.jpeg" alt="Map" width="50" height="50">
         </a>
     </div>
 
@@ -198,36 +176,30 @@
                 if (timeDifference < 1) {
                     // If the cookie is less than 1 hour old
                     document.getElementById("error-message").textContent = "Sorry, you have already filled the form. Please check your email.";
-                    document.getElementById("open-form-btn").disabled = true; // Disable button
-                    return; // Do not proceed further
+                    return false; // Do not allow opening the form
                 }
             }
 
             // If no cookie exists or the cookie is older than 1 hour
             document.getElementById("error-message").textContent = "";
-            document.getElementById("open-form-btn").disabled = false; // Enable button
+            return true; // Allow opening the form
         }
 
         // Handle checkbox change event
         document.getElementById("accept-checkbox").addEventListener("change", function() {
-            const submitButton = document.getElementById("open-form-btn");
-            submitButton.disabled = !this.checked;
-        });
+            const iframeContainer = document.getElementById("iframe-container");
+            if (this.checked) {
+                // Check if the cookie is valid (not filled in the last hour)
+                if (checkCookie()) {
+                    const currentTimestamp = new Date().getTime();
+                    setCookie('freebieTimestamp', currentTimestamp, 1); // Save timestamp for 1 day
 
-        // Open the form in an iframe when the user clicks the button
-        document.getElementById("open-form-btn").addEventListener("click", function() {
-            if (document.getElementById("accept-checkbox").checked) {
-                const currentTimestamp = new Date().getTime();
-                setCookie('freebieTimestamp', currentTimestamp, 1); // Save timestamp for 1 day
-
-                // Create an iframe to display the form
-                const iframeContainer = document.getElementById("iframe-container");
-                iframeContainer.innerHTML = `<iframe src="https://forms.gle/wo9rj53zPYmAGBMZ7" title="Freebie Form"></iframe>`;
+                    // Open the iframe with the form
+                    iframeContainer.innerHTML = `<iframe src="https://forms.gle/wo9rj53zPYmAGBMZ7" title="Freebie Form"></iframe>`;
+                }
             }
         });
 
-        // Initialize page: check cookie on load
-        checkCookie();
     </script>
 
 </body>
