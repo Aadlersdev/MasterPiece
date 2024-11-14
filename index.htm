@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freebie Offer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        /* Header Styling with Logo on the Left */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: white;
+        }
+
+        header img {
+            width: 50px;
+            height: auto;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        /* Container for form and messages */
+        .container {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .checkbox-container {
+            margin-top: 20px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        /* Iframe styling */
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            margin-top: 20px;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button-container button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Footer Social Icons */
+        .social-icons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-icons a {
+            font-size: 24px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .social-icons a:hover {
+            color: #007bff;
+        }
+
+        /* Responsive design for small screens */
+        @media (max-width: 600px) {
+            .social-icons {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header with Logo on the Left -->
+    <header>
+        <img src="logo-placeholder.png" alt="Logo"> <!-- Logo Image -->
+        <h1>Freebie Offer</h1>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <h1>Fill in this form to take home a freebie!</h1>
+        
+        <!-- Form Section -->
+        <div class="message" id="error-message"></div>
+        
+        <form id="freebie-form">
+            <label for="accept-checkbox">Check to continue:</label>
+            <div class="checkbox-container">
+                <input type="checkbox" id="accept-checkbox">
+                <label for="accept-checkbox">I accept the terms and conditions</label>
+            </div>
+
+            <!-- Button to submit the form -->
+            <div class="button-container">
+                <button type="button" id="open-form-btn" disabled>Open the Form</button>
+            </div>
+        </form>
+
+        <!-- Iframe for form will appear here -->
+        <div id="iframe-container"></div>
+    </div>
+
+    <!-- Social Icons Section -->
+    <div class="social-icons">
+        <a href="https://www.instagram.com/overthemoon.in/" target="_blank" title="Instagram">
+            <img src="iglogo.jpeg" alt="Instagram" width="40" height="40">
+        </a>
+        <a href="tel:+919100623334" target="_blank" title="Call Us">
+            <img src="phone-logo.png" alt="Phone" width="40" height="40">
+        </a>
+        <a href="https://maps.app.goo.gl/SFhSyVSBXPFnw4Mu5" target="_blank" title="Find Us on Google Maps">
+            <img src="map-logo.jpeg" alt="Map" width="40" height="40">
+        </a>
+    </div>
+
+    <script>
+        // Helper function to get cookies
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        // Helper function to set cookies
+        function setCookie(name, value, days) {
+            const d = new Date();
+            d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        // Check if the user has already submitted the form within the last hour
+        function checkCookie() {
+            const cookieTimestamp = getCookie('freebieTimestamp');
+            const currentTime = new Date().getTime();
+
+            if (cookieTimestamp) {
+                const timeDifference = (currentTime - cookieTimestamp) / (1000 * 60 * 60); // Time difference in hours
+
+                if (timeDifference < 1) {
+                    // If the cookie is less than 1 hour old
+                    document.getElementById("error-message").textContent = "Sorry, you have already filled the form. Please check your email.";
+                    document.getElementById("open-form-btn").disabled = true; // Disable button
+                    return; // Do not proceed further
+                }
+            }
+
+            // If no cookie exists or the cookie is older than 1 hour
+            document.getElementById("error-message").textContent = "";
+            document.getElementById("open-form-btn").disabled = false; // Enable button
+        }
+
+        // Handle checkbox change event
+        document.getElementById("accept-checkbox").addEventListener("change", function() {
+            const submitButton = document.getElementById("open-form-btn");
+            submitButton.disabled = !this.checked;
+        });
+
+        // Open the form in an iframe when the user clicks the button
+        document.getElementById("open-form-btn").addEventListener("click", function() {
+            if (document.getElementById("accept-checkbox").checked) {
+                const currentTimestamp = new Date().getTime();
+                setCookie('freebieTimestamp', currentTimestamp, 1); // Save timestamp for 1 day
+
+                // Create an iframe to display the form
+                const iframeContainer = document.getElementById("iframe-container");
+                iframeContainer.innerHTML = `<iframe src="https://forms.gle/wo9rj53zPYmAGBMZ7" title="Freebie Form"></iframe>`;
+            }
+        });
+
+        // Initialize page: check cookie on load
+        checkCookie();
+    </script>
+
+</body>
+</html>
