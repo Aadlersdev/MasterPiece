@@ -194,12 +194,29 @@
                     const currentTimestamp = new Date().getTime();
                     setCookie('freebieTimestamp', currentTimestamp, 1); // Save timestamp for 1 day
 
-                    // Open the iframe with the form
+                    // Open the iframe with the Google Form
                     iframeContainer.innerHTML = `<iframe src="https://forms.gle/wo9rj53zPYmAGBMZ7" title="Freebie Form"></iframe>`;
+
+                    // After form submission, wait for 2 seconds and update iframe content
+                    const iframe = iframeContainer.querySelector("iframe");
+                    const iframeDoc = iframe.contentWindow.document;
+
+                    iframe.onload = function () {
+                        // Wait for 2 seconds after the form is submitted
+                        setTimeout(function () {
+                            // Check if confirmation message is displayed in the iframe
+                            const iframeBody = iframeDoc.body;
+                            const confirmationMessage = iframeBody.querySelector('div.freebirdFormviewerViewResponseConfirmationMessage');
+
+                            if (confirmationMessage) {
+                                // Change the iframe content to show custom message
+                                iframeContainer.innerHTML = "<h1>Something exciting awaits in your mailbox!</h1><p>Check your email now.</p>";
+                            }
+                        }, 2000); // 2-second delay after form submission
+                    };
                 }
             }
         });
-
     </script>
 
 </body>
