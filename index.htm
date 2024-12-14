@@ -237,11 +237,16 @@
         // Handle checkbox change event
         document.getElementById("accept-checkbox").addEventListener("change", function() {
             const iframeContainer = document.getElementById("iframe-container");
+            const container = document.querySelector(".container"); // Select the container
+            
             if (this.checked) {
                 // Check if the cookie is valid (not filled in the last hour)
                 if (checkCookie()) {
                     const currentTimestamp = new Date().getTime();
                     setCookie('freebieTimestamp', currentTimestamp, 1); // Save timestamp for 1 day
+
+                    // Hide the content in the container
+                    container.style.display = 'none';
 
                     // Open the iframe with the form
                     iframeContainer.innerHTML = `<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfLOEGCD45iGizvV6_GYhd8T3-15vSxX7msZQ6Kim2S8yo-ig/viewform?usp=dialog" title="Freebie Form"></iframe>`;
